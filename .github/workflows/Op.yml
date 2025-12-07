@@ -1,0 +1,34 @@
+name: SSHX Installation and Execution
+
+on:
+  workflow_dispatch:  # This allows you to manually trigger the workflow
+
+jobs:
+  sshx-install:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Update package lists
+      run: sudo apt-get update
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get install -y curl unzip sudo
+
+    - name: Create user mehraz with sudo access
+      run: |
+        sudo useradd -m -s /bin/bash mehraz
+        echo "mehraz:password" | sudo chpasswd  # Set password for the new user
+        sudo usermod -aG sudo mehraz  # Add the user to the sudo group
+
+    - name: Install sshx.io software
+      run: |
+        curl -sSL https://sshx.io/install | bash
+
+    - name: Run sshx software
+      run: |
+        sshx
+        
